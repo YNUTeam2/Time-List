@@ -23,12 +23,18 @@ class Task {
 }
 
 class TaskModel extends ChangeNotifier {
-  List<Task> _tasks = [];
+  final List<Task> _tasks = [];
 
+  int length() => _tasks.length;
   Task getByIndex(int index) => _tasks[index];
 
   void addTask(Task task) {
     _tasks.add(task);
+    notifyListeners();
+  }
+
+  void deleteTask(int index) {
+    _tasks.removeAt(index);
     notifyListeners();
   }
 }

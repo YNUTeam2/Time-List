@@ -1,27 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
+import 'package:provider/provider.dart';
+import 'package:time_list/task.dart';
 
-class TaskInfoPage extends StatelessWidget {
+class TaskInfoPage extends StatefulWidget {
+  const TaskInfoPage({Key? key, required this.index}) : super(key: key);
+
+  final int index;
+
+  @override
+  State<TaskInfoPage> createState() => _TaskInfoPageState();
+}
+
+class _TaskInfoPageState extends State<TaskInfoPage> {
+  @override
   Widget build(BuildContext context) {
+    var task = context.watch<TaskModel>().getByIndex(widget.index);
+
     return Scaffold(
       appBar: AppBar(
         title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
-            "Task1",
+            task.title,
             style: TextStyle(fontSize: 16, color: Colors.white),
           ),
           Text(
-            "截止时间：2022年6月7日 12:13",
+            "截止时间" + (task.date == null ? "暂无" : ":" + task.date.toString()),
             style: TextStyle(fontSize: 10, color: Colors.white),
           ),
         ]),
       ),
-      body: TaskPage(),
+      body: TaskPage(
+        index: widget.index,
+      ),
     );
   }
 }
 
 class TaskPage extends StatefulWidget {
+  const TaskPage({Key? key, required this.index}) : super(key: key);
+
+  final int index;
+
+  @override
   State<StatefulWidget> createState() {
     return MyTaskPage();
   }
@@ -29,13 +49,13 @@ class TaskPage extends StatefulWidget {
 
 class MyTaskPage extends State<TaskPage> {
   @override
-  Color colortochange = Colors.green; //页面主题颜色
   Widget build(BuildContext context) {
-    // TODO: implement build
+    var task = context.watch<TaskModel>().getByIndex(widget.index);
+
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-            color: colortochange, width: 5, style: BorderStyle.solid),
+        border:
+            Border.all(color: task.color, width: 5, style: BorderStyle.solid),
       ),
       child: ListView(padding: EdgeInsets.all(7), children: [
         Column(
@@ -45,7 +65,7 @@ class MyTaskPage extends State<TaskPage> {
               children: [
                 Icon(
                   Icons.description,
-                  color: colortochange,
+                  color: task.color,
                   size: 20,
                 ),
                 Container(
@@ -54,7 +74,7 @@ class MyTaskPage extends State<TaskPage> {
                     "  任务详情",
                     style: TextStyle(
                       fontSize: 18,
-                      color: colortochange,
+                      color: task.color,
                     ),
                   ),
                 ),
@@ -69,11 +89,11 @@ class MyTaskPage extends State<TaskPage> {
                 labelText: "任务主要内容",
                 labelStyle: TextStyle(
                   fontSize: 15,
-                  color: colortochange,
+                  color: task.color,
                 ),
                 helperText: "写下您想要完成的任务吧",
                 helperStyle: TextStyle(
-                  color: colortochange,
+                  color: task.color,
                 ),
                 filled: true,
                 fillColor: Colors.white70,
@@ -88,14 +108,14 @@ class MyTaskPage extends State<TaskPage> {
                   children: [
                     Icon(
                       Icons.color_lens_outlined,
-                      color: colortochange,
+                      color: task.color,
                       size: 20,
                     ),
                     Text(
                       "  颜色 ",
                       style: TextStyle(
                         fontSize: 18,
-                        color: colortochange,
+                        color: task.color,
                       ),
                     ),
                   ],
@@ -103,7 +123,7 @@ class MyTaskPage extends State<TaskPage> {
                 OutlinedButton(
                   onPressed: () {
                     setState(() {
-                      colortochange = Colors.blue;
+                      task.color = Colors.blue;
                     });
                   },
                   style: ButtonStyle(
@@ -120,7 +140,7 @@ class MyTaskPage extends State<TaskPage> {
                 OutlinedButton(
                     onPressed: () {
                       setState(() {
-                        colortochange = Colors.red;
+                        task.color = Colors.red;
                       });
                     },
                     style: ButtonStyle(
@@ -136,7 +156,7 @@ class MyTaskPage extends State<TaskPage> {
                 OutlinedButton(
                     onPressed: () {
                       setState(() {
-                        colortochange = Colors.green;
+                        task.color = Colors.green;
                       });
                     },
                     style: ButtonStyle(
@@ -152,7 +172,7 @@ class MyTaskPage extends State<TaskPage> {
                 OutlinedButton(
                   onPressed: () {
                     setState(() {
-                      colortochange = Colors.orange;
+                      task.color = Colors.orange;
                     });
                   },
                   style: ButtonStyle(
@@ -176,7 +196,7 @@ class MyTaskPage extends State<TaskPage> {
               children: [
                 Icon(
                   Icons.timelapse_outlined,
-                  color: colortochange,
+                  color: task.color,
                   size: 20,
                 ),
                 Container(
@@ -185,7 +205,7 @@ class MyTaskPage extends State<TaskPage> {
                     "  截止日期",
                     style: TextStyle(
                       fontSize: 18,
-                      color: colortochange,
+                      color: task.color,
                     ),
                   ),
                 ),
@@ -196,7 +216,7 @@ class MyTaskPage extends State<TaskPage> {
                 SizedBox(width: 40, height: 10),
                 Icon(
                   Icons.alarm,
-                  color: colortochange,
+                  color: task.color,
                   size: 25,
                 ),
                 TextButton(
@@ -205,7 +225,7 @@ class MyTaskPage extends State<TaskPage> {
                       "2022年",
                       style: TextStyle(
                         fontSize: 16,
-                        color: colortochange,
+                        color: task.color,
                         fontStyle: FontStyle.italic,
                       ),
                     )),
@@ -215,7 +235,7 @@ class MyTaskPage extends State<TaskPage> {
                       "6月",
                       style: TextStyle(
                         fontSize: 16,
-                        color: colortochange,
+                        color: task.color,
                         fontStyle: FontStyle.italic,
                       ),
                     )),
@@ -225,7 +245,7 @@ class MyTaskPage extends State<TaskPage> {
                       "7日",
                       style: TextStyle(
                         fontSize: 16,
-                        color: colortochange,
+                        color: task.color,
                         fontStyle: FontStyle.italic,
                       ),
                     )),
@@ -244,7 +264,7 @@ class MyTaskPage extends State<TaskPage> {
                       "12时",
                       style: TextStyle(
                         fontSize: 16,
-                        color: colortochange,
+                        color: task.color,
                         fontStyle: FontStyle.italic,
                       ),
                     )),
@@ -254,14 +274,14 @@ class MyTaskPage extends State<TaskPage> {
                       "13分",
                       style: TextStyle(
                         fontSize: 16,
-                        color: colortochange,
+                        color: task.color,
                         fontStyle: FontStyle.italic,
                       ),
                     )),
                 Text(
                   "          --任务截止时间临近，您需要加油了哟",
                   style: TextStyle(
-                    color: colortochange,
+                    color: task.color,
                     fontSize: 10,
                   ),
                 )
@@ -272,14 +292,14 @@ class MyTaskPage extends State<TaskPage> {
               children: [
                 Icon(
                   Icons.addchart_sharp,
-                  color: colortochange,
+                  color: task.color,
                   size: 25,
                 ),
                 Text(
                   "  已用时长",
                   style: TextStyle(
                     fontSize: 18,
-                    color: colortochange,
+                    color: task.color,
                   ),
                 ),
               ],
@@ -298,32 +318,32 @@ class MyTaskPage extends State<TaskPage> {
                 ),
                 Icon(
                   Icons.whatshot_sharp,
-                  color: colortochange,
+                  color: task.color,
                   size: 30,
                 ),
                 Icon(
                   Icons.whatshot_sharp,
-                  color: colortochange,
+                  color: task.color,
                   size: 30,
                 ),
                 Icon(
                   Icons.whatshot_sharp,
-                  color: colortochange,
+                  color: task.color,
                   size: 30,
                 ),
                 Icon(
                   Icons.whatshot_sharp,
-                  color: colortochange,
+                  color: task.color,
                   size: 30,
                 ),
                 Icon(
                   Icons.whatshot_sharp,
-                  color: colortochange,
+                  color: task.color,
                   size: 30,
                 ),
                 Icon(
                   Icons.whatshot_sharp,
-                  color: colortochange,
+                  color: task.color,
                   size: 30,
                 ),
                 Icon(
@@ -357,12 +377,12 @@ class MyTaskPage extends State<TaskPage> {
                 Icon(
                   Icons.book,
                   size: 25,
-                  color: colortochange,
+                  color: task.color,
                 ),
                 Text(
                   "  每日一句：",
                   style: TextStyle(
-                    color: colortochange,
+                    color: task.color,
                     fontSize: 18,
                   ),
                 ),
@@ -371,16 +391,9 @@ class MyTaskPage extends State<TaskPage> {
             Text(
               "无可奈何花落去，似曾相识燕归来。",
               style: TextStyle(
-                color: colortochange,
+                color: task.color,
                 fontSize: 15,
                 fontStyle: FontStyle.italic,
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Image(
-                image: AssetImage("images/Cute.jpg"),
-                width: 110,
               ),
             ),
           ],
