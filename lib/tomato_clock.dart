@@ -10,34 +10,11 @@ class TomatoTimer extends StatefulWidget {
 }
 
 class _TomatoTimerState extends State<TomatoTimer> {
-  List<Widget> buttons = [];
   CountDownController controller = CountDownController();
   Duration duration = Duration(seconds: 0);
   bool start = false;
-
-  @override
-  void initState() {
-    buttons.addAll([
-      IconButton(
-          onPressed: () {
-            setState(() {
-              start = true;
-              controller.start();
-            });
-          },
-          icon: start ? Icon(Icons.pause) : Icon(Icons.play_arrow)),
-      IconButton(
-        onPressed: () {
-          setState(() {
-            controller.restart(duration: duration.inSeconds);
-            start = false;
-          });
-        },
-        icon: Icon(Icons.close),
-      ),
-    ]);
-    super.initState();
-  }
+  int time = 0;
+  bool swap = false;
 
   @override
   Widget build(BuildContext context) {
@@ -115,12 +92,42 @@ class _TomatoTimerState extends State<TomatoTimer> {
         direction: Axis.horizontal,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: start
-            ? buttons
+            ? [
+                IconButton(
+                    onPressed: () {
+                      setState(() {
+                        if (start && time == 0) {
+                          controller.start();
+                          time++;
+                        } else {
+                          if (swap) {
+                            controller.resume();
+                          } else {
+                            controller.pause();
+                          }
+                        }
+                        swap = !swap;
+                      });
+                    },
+                    icon: swap ? Icon(Icons.pause) : Icon(Icons.play_arrow)),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      controller.restart(duration: duration.inSeconds);
+                      start = false;
+                      swap = false;
+                      time = 0;
+                    });
+                  },
+                  icon: Icon(Icons.close),
+                ),
+              ]
             : [
                 IconButton(
                     onPressed: () {
                       setState(() {
                         start = true;
+                        time = 0;
                       });
                     },
                     icon: Icon(Icons.play_arrow)),
