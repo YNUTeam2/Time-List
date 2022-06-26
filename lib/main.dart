@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:time_list/tomato_clock.dart';
 import 'setting.dart';
 import 'task.dart';
 import 'taskinfo.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         'home': (context) => const MyHomePage(title: '任务清单'),
         'setting': (context) => const SettingPage(),
         'addtask': (context) => PageAdd(),
+        'tomato_timer': (context) => TomatoTimer(),
         'test': (context) => TestPage(),
       },
       theme: ThemeData(
@@ -145,7 +147,7 @@ class MyDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.alarm),
             title: const Text('番茄钟'),
-            onTap: () {},
+            onTap: () => Navigator.pushNamed(context, 'tomato_timer'),
           ),
           ListTile(
             leading: const Icon(Icons.settings),
@@ -228,6 +230,11 @@ class _PageAdd extends State<PageAdd> {
                   prefixIcon: Icon(Icons.assignment),
                   hintText: "请输入任务详情",
                 ),
+                onChanged: (v) {
+                  setState(() {
+                    task.moreInfo = v;
+                  });
+                },
               ),
             ),
             ElevatedButton(
